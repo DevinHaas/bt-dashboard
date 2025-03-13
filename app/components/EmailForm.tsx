@@ -57,8 +57,11 @@ export function EmailForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-1/2 mb-16">
-        <div className="flex gap-2 mt-4 justify-center">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="w-full lg:w-1/2 mb-16"
+      >
+        <div className="flex gap-2 mt-4 justify-between lg:justify-center">
           <FormField
             control={form.control}
             name="email"

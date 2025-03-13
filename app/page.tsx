@@ -4,7 +4,7 @@ import { BenefitsSection } from "./components/BenefitsSection";
 export default function Home() {
   return (
     <main className="container flex flex-col items-center justify-center mx-auto px-4 py-8">
-      <h1 className="text-5xl font-bold mt-6 mb-6 group">
+      <h1 className="text-2xl md:text-5xl  font-bold mt-6 mb-6 group">
         <span className="inline-block hover:animate-wave hover:cursor-pointer">
           👋
         </span>
