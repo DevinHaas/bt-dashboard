@@ -42,7 +42,7 @@ export function EmailForm() {
         },
       );
     } else {
-      toast("Uuups etwas hat nicht geklappt 😥", {
+      toast.error("Uuups etwas hat nicht geklappt 😥", {
         description: result.message || "Something went wrong!",
       });
     }
