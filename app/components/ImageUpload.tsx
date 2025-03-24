@@ -4,7 +4,7 @@ import React, { type ChangeEvent } from "react";
 import { Trash2 } from "lucide-react";
 import Image from "next/image";
 import { FileWithPreview } from "@/types/screenshotTypes";
-import { Control, ControllerRenderProps, UseFormReturn } from "react-hook-form";
+import { Control, ControllerRenderProps } from "react-hook-form";
 import {
   FormControl,
   FormField,
@@ -32,13 +32,12 @@ export default function FileUploader({ control }: ImageUploadProps) {
     const newScreenshots = Array.from(event.target.files)
       .filter((file) => file.size <= MAX_FILE_SIZE)
       .map((file) => ({
-        name: file.name,
-        size: file.size,
-        type: file.type,
+        file,
         preview: URL.createObjectURL(file),
       }));
 
     field.onChange([...(field.value || []), ...newScreenshots]);
+    event.target.value = "";
   };
 
   return (
@@ -46,7 +45,7 @@ export default function FileUploader({ control }: ImageUploadProps) {
       name="screenshots"
       control={control}
       render={({ field }) => (
-        <FormItem>
+        <FormItem className="mt-2">
           <FormLabel>Screenshots</FormLabel>
           <FormControl>
             <div>
@@ -108,7 +107,7 @@ export default function FileUploader({ control }: ImageUploadProps) {
                           <div className="relative aspect-square rounded-lg overflow-hidden border border-gray-200">
                             <Image
                               src={file.preview || "/placeholder.svg"}
-                              alt={file.name}
+                              alt={file.file.name}
                               fill
                               className="rounded-md object-cover"
                             />
@@ -117,10 +116,10 @@ export default function FileUploader({ control }: ImageUploadProps) {
                           <div className="flex flex-col items-center justify-center aspect-square rounded-lg border border-gray-200 bg-gray-50 p-4">
                             <div className="text-center">
                               <p className="text-sm text-gray-500 truncate max-w-[120px]">
-                                {file.name}
+                                {file.file.name}
                               </p>
                               <p className="text-xs text-gray-400">
-                                {(file.size / 1024).toFixed(2)} KB
+                                {(file.file.size / 1024).toFixed(2)} KB
                               </p>
                             </div>
                           </div>

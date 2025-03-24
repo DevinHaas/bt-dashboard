@@ -25,7 +25,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { FileWithPreview } from "@/types/screenshotTypes";
-import { log } from "console";
 
 const FormSchema: z.ZodType<{ date: Date; screenshots: FileWithPreview[] }> =
   z.object({
@@ -107,7 +106,9 @@ export function ScreenshotForm() {
           )}
         />
         <ImageUpload control={form.control} />
-        <Button type="submit">Submit Screenshot</Button>
+        <Button className="mt-2" type="submit">
+          Submit Screenshot
+        </Button>
       </form>
     </Form>
   );
