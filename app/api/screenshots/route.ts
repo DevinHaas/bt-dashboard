@@ -21,7 +21,7 @@ export async function POST(request: Request) {
   const fields: Record<string, string> = {};
   const files: { filename: string; buffer: Buffer; mimeType: string }[] = [];
 
-  return new Promise((resolve, reject) => {
+  return new Promise<Response>((resolve, reject) => {
     busboy.on("field", (name, val) => {
       fields[name] = val;
     });
