@@ -2,7 +2,7 @@ import { ScreenshotForm } from "@/app/components/DailyCheckinForm";
 import getNameFromEmailadress from "@/lib/getNameFromEmailadress";
 import { auth, currentUser } from "@clerk/nextjs/server";
 
-export default async function Dashboard() {
+export default async function DailyCheckingFormPage() {
   const { userId } = await auth();
 
   if (!userId) {
