@@ -14,9 +14,10 @@ export default async function Dashboard() {
   return (
     <main className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">
-        Welcome {email ? " , " + getNameFromEmailadress(email) : "!"}
+        Welcome {email ? " " + getNameFromEmailadress(email) : ""} to the Daily
+        Check-in 📆
       </h1>
-      <h2 className="text-2xl font-semibold mb-4">Daily Check-in 📆</h2>
+      <h2 className="text-2xl font-semibold mb-4"></h2>
       <ScreenshotForm></ScreenshotForm>
     </main>
   );

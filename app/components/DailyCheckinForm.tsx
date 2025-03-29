@@ -18,13 +18,15 @@ import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
-import { toast } from "sonner";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { FileWithPreview } from "@/types/screenshotTypes";
+import axios from "axios";
+import { useAuth } from "@clerk/nextjs";
+import { toast } from "sonner";
 
 const FormSchema: z.ZodType<{ date: Date; screenshots: FileWithPreview[] }> =
   z.object({
@@ -34,11 +36,7 @@ const FormSchema: z.ZodType<{ date: Date; screenshots: FileWithPreview[] }> =
     screenshots: z
       .array(
         z.object({
-          name: z.string(),
-          size: z.number().max(5 * 1024 * 1024, "Each file must be under 5MB"),
-          type: z
-            .string()
-            .regex(/^image\/(jpeg|png|gif)$/, "Only images are allowed"),
+          file: z.instanceof(File),
           preview: z.string(),
         }),
       )
@@ -46,10 +44,35 @@ const FormSchema: z.ZodType<{ date: Date; screenshots: FileWithPreview[] }> =
   });
 
 export function ScreenshotForm() {
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
-    if (data.date) {
-      toast.success("You submitted the following values:");
+  const { userId } = useAuth();
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    const formData = new FormData();
+
+    formData.append("userId", userId!);
+    formData.append("date", data.date.toDateString());
+    data.screenshots.forEach((file) => {
+      formData.append("screenshots", file.file);
+    });
+
+    try {
+      await axios.post("/api/screenshots", formData);
+
+      toast.success(
+        `Your ${
+          data.screenshots.length > 1 ? "screenshots were" : "screenshot was"
+        } successfully uploaded 🎉`,
+      );
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        const message =
+          err.response?.data?.error ||
+          err.response?.data?.message ||
+          "Upload failed. Please try again.";
+
+        toast.error(message);
+      } else {
+        toast.error("An unexpected error occurred.");
+      }
     }
   }
 
