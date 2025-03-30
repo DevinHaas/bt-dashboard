@@ -17,7 +17,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
+import { format, interval, isSameDay, isWithinInterval } from "date-fns";
 import {
   Popover,
   PopoverContent,
@@ -27,6 +27,8 @@ import { FileWithPreview } from "@/types/screenshotTypes";
 import axios from "axios";
 import { useAuth } from "@clerk/nextjs";
 import { toast } from "sonner";
+import { STUDY_START_DATE } from "@/lib/study_meta";
+import useScreenshots from "@/hooks/useScreenshots";
 
 const FormSchema: z.ZodType<{ date: Date; screenshots: FileWithPreview[] }> =
   z.object({
@@ -45,6 +47,9 @@ const FormSchema: z.ZodType<{ date: Date; screenshots: FileWithPreview[] }> =
 
 export function ScreenshotForm() {
   const { userId } = useAuth();
+  const { UploadScreenshots, GetUploadDates } = useScreenshots();
+  const { data: dates, isLoading, isError } = GetUploadDates(userId);
+
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     const formData = new FormData();
 
@@ -55,7 +60,7 @@ export function ScreenshotForm() {
     });
 
     try {
-      await axios.post("/api/screenshots", formData);
+      UploadScreenshots(formData);
 
       toast.success(
         `Your ${
@@ -114,8 +119,15 @@ export function ScreenshotForm() {
                     selected={field.value}
                     onSelect={field.onChange}
                     disabled={(date: Date) =>
-                      date > new Date() || date < new Date("1900-01-01")
+                      date > new Date() || date < STUDY_START_DATE
                     }
+                    modifiers={{
+                      uploaded: (date: Date) =>
+                        dates?.some((d: Date) => isSameDay(d, date)) ?? false,
+                    }}
+                    modifiersClassNames={{
+                      uploaded: "bg-green-200 text-green-800",
+                    }}
                     initialFocus
                   />
                 </PopoverContent>
