@@ -16,12 +16,13 @@ datasource db {
 
 model User {
   id String @id @default(uuid())
+  clerk_id String @unique 
   screenshotUploads ScreenshotUpload[] 
 }
 
 model ScreenshotUpload {
   id String @id @default(uuid())
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [clerk_id])
   userId String
   date DateTime 
 }
