@@ -7,7 +7,7 @@ export default function useScreenshots() {
     return request.status;
   };
 
-  const GetUploadDates = (userId: string) =>
+  const GetUploadDates = (userId: string | undefined) =>
     useQuery<Date[]>({
       queryKey: ["screenshot-dates", userId],
       queryFn: async () => {
@@ -17,7 +17,6 @@ export default function useScreenshots() {
           },
         });
 
-        console.log(request.data.dates);
         return request.data.dates;
       },
       enabled: !!userId,

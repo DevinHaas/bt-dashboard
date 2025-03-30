@@ -17,7 +17,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
-import { format, interval, isSameDay, isWithinInterval } from "date-fns";
+import { format, isSameDay } from "date-fns";
 import {
   Popover,
   PopoverContent,
@@ -48,7 +48,7 @@ const FormSchema: z.ZodType<{ date: Date; screenshots: FileWithPreview[] }> =
 export function ScreenshotForm() {
   const { userId } = useAuth();
   const { UploadScreenshots, GetUploadDates } = useScreenshots();
-  const { data: dates, isLoading, isError } = GetUploadDates(userId);
+  const { data: dates } = GetUploadDates(userId ? userId : undefined);
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     const formData = new FormData();
