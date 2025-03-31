@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import ImageUpload from "./ImageUpload";
-import { date, z } from "zod";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
