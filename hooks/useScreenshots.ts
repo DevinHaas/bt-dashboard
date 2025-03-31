@@ -1,29 +1,49 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
-export default function useScreenshots() {
-  const UploadScreenshots = async (data: FormData) => {
-    const request = await axios.post("/api/screenshots", data);
-    return request.status;
-  };
+export function useUploadScreenshots() {
+  const queryClient = useQueryClient();
 
-  const GetUploadDates = (userId: string | undefined) =>
-    useQuery<Date[]>({
-      queryKey: ["screenshot-dates", userId],
-      queryFn: async () => {
-        const request = await axios.get(`/api/screenshots/dates`, {
-          params: {
-            userId: userId,
-          },
-        });
+  return useMutation({
+    mutationKey: ["screenshots"],
+    mutationFn: async ({
+      data,
+      date,
+      userId,
+    }: {
+      data: FormData;
+      date: Date;
+      userId: string;
+    }) => {
+      try {
+        await axios.post("/api/screenshots/dates", { date, userId });
 
-        return request.data.dates;
-      },
-      enabled: !!userId,
-    });
+        const request = await axios.post("/api/screenshots", data);
+        return request.status;
+      } catch (error: unknown) {
+        throw error;
+      }
+    },
+    onSuccess: (_, { userId }) => {
+      queryClient.invalidateQueries({
+        queryKey: ["screenshot-dates", userId],
+      });
+    },
+  });
+}
 
-  return {
-    UploadScreenshots,
-    GetUploadDates,
-  };
+export function useGetUploadDates(userId?: string | null) {
+  return useQuery<Date[]>({
+    queryKey: ["screenshot-dates", userId],
+    queryFn: async () => {
+      const request = await axios.get(`/api/screenshots/dates`, {
+        params: {
+          userId: userId,
+        },
+      });
+
+      return request.data.datesArray;
+    },
+    enabled: !!userId,
+  });
 }

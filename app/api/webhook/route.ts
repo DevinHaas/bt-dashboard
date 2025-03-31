@@ -12,7 +12,6 @@ type Event = {
 const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
-  console.log(req);
   const clerkSecret = process.env.CLERK_WEBHOOK_SECRET || "test-secret";
   const svix_id = req.headers.get("svix-id") ?? "";
   const svix_timestamp = req.headers.get("svix-timestamp") ?? "";
@@ -33,24 +32,16 @@ export async function POST(req: Request) {
     return new Response("Bad Request " + err, { status: 400 });
   }
 
-  // Rest
-
   try {
-    // ✅ Extract user data
-    //
     const eventType = evt.type;
     const clerk_id = evt?.data?.id as string;
-    const clerk_id_for_session = evt.data.client_id as string;
-
-    console.log(evt);
-    console.log("🔔 Clerk Webhook Received:", clerk_id);
+    const clerk_id_for_session = evt?.data.user_id as string;
 
     switch (eventType) {
       case "user.created":
         await createUser(clerk_id);
         break;
       case "session.created":
-        console.log("session created");
         await createUser(clerk_id_for_session);
         break;
       default:

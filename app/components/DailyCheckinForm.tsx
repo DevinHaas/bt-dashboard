@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import ImageUpload from "./ImageUpload";
-import { z } from "zod";
+import { date, z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -28,7 +28,10 @@ import axios from "axios";
 import { useAuth } from "@clerk/nextjs";
 import { toast } from "sonner";
 import { STUDY_START_DATE } from "@/lib/study_meta";
-import useScreenshots from "@/hooks/useScreenshots";
+import {
+  useGetUploadDates,
+  useUploadScreenshots,
+} from "@/hooks/useScreenshots";
 
 const FormSchema: z.ZodType<{ date: Date; screenshots: FileWithPreview[] }> =
   z.object({
@@ -47,8 +50,9 @@ const FormSchema: z.ZodType<{ date: Date; screenshots: FileWithPreview[] }> =
 
 export function ScreenshotForm() {
   const { userId } = useAuth();
-  const { UploadScreenshots, GetUploadDates } = useScreenshots();
-  const { data: dates } = GetUploadDates(userId ? userId : undefined);
+
+  const { mutate: UploadScreenshots } = useUploadScreenshots();
+  const { data: dates } = useGetUploadDates(userId);
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     const formData = new FormData();
@@ -60,7 +64,11 @@ export function ScreenshotForm() {
     });
 
     try {
-      UploadScreenshots(formData);
+      if (!userId) {
+        throw new Error("please log-in to upload screenshots");
+      }
+
+      UploadScreenshots({ data: formData, date: data.date, userId });
 
       toast.success(
         `Your ${
@@ -122,8 +130,12 @@ export function ScreenshotForm() {
                       date > new Date() || date < STUDY_START_DATE
                     }
                     modifiers={{
-                      uploaded: (date: Date) =>
-                        dates?.some((d: Date) => isSameDay(d, date)) ?? false,
+                      uploaded: (date: Date) => {
+                        console.log(dates);
+                        return (
+                          dates?.some((d: Date) => isSameDay(d, date)) ?? false
+                        );
+                      },
                     }}
                     modifiersClassNames={{
                       uploaded: "bg-green-200 text-green-800",
