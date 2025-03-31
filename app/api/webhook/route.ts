@@ -1,6 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { Webhook } from "svix";
+import prisma from "@/lib/prisma";
 
 type EventType = "user.created" | "user.updated" | "session.created";
 type Event = {
@@ -8,8 +8,6 @@ type Event = {
   object: "event";
   type: EventType;
 };
-
-const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   const clerkSecret = process.env.CLERK_WEBHOOK_SECRET || "test-secret";
