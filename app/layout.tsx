@@ -16,9 +16,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "FocusCoin BT Dashboard",
+  title: "Bachelor Thesis Dashboard",
   description:
-    "This Dashboard is used for my Bachelor Thesis to collect the nessecary data",
+    "Welcome to the dashboard of my Bachelor Thesis. This dashboard is used to collect the necessary data for my research.",
 };
 
 export default function RootLayout({

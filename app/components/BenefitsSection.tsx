@@ -9,15 +9,14 @@ const benefits = [
     width: "w-full md:w-64",
   },
   {
-    title: "Gutschein Verlosung 🎁",
-    description:
-      "Erhalte eine Geschenkkarte im Wert von 10 $ für einen Händler deiner Wahl",
+    title: "Gutschein 🎁",
+    description: "Erhalte eine Geschenkkarte im Wert von 10 $.",
     height: "h-56 md:h-80",
     width: "w-full md:w-80",
   },
   {
     title: "Dankbarkeit 😇",
-    description: "Ganz Viel Dankbarkeit und Wertschätzung",
+    description: "Ganz Viel Dankbarkeit und Wertschätzung.",
     height: "h-48 md:h-64",
     width: "w-full md:w-64",
   },
