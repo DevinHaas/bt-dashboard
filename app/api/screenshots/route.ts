@@ -45,7 +45,7 @@ export async function POST(request: Request) {
         await Promise.all(
           files.map((file, index) =>
             minioClient.putObject(
-              "screenshots",
+              `${process.env.MINIO_BUCKET}`,
               `${fields.userId}/${fields.date}/${file.filename}-${index}`,
               file.buffer,
               file.buffer.length,
