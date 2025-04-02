@@ -75,6 +75,7 @@ export function ScreenshotForm() {
           data.screenshots.length > 1 ? "screenshots were" : "screenshot was"
         } successfully uploaded 🎉`,
       );
+      form.reset();
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         const message =
