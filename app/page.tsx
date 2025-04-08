@@ -1,5 +1,5 @@
-import { EmailForm } from "./components/EmailForm";
-import { BenefitsSection } from "./components/BenefitsSection";
+import { BenefitsSection } from "@/components/BenefitsSection";
+import { EmailForm } from "@/components/EmailForm";
 
 export default function Home() {
   return (

@@ -7,8 +7,6 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const userId = searchParams.get("userId");
 
-  console.log("request called");
-
   const dates = await prisma.screenshotUpload.findMany({
     where: {
       userId: userId!,
@@ -17,10 +15,8 @@ export async function GET(request: Request) {
       date: true,
     },
   });
-  console.log(dates);
 
   const datesArray: Date[] = dates.map((date) => date.date);
-  console.log("Dates array", datesArray);
   return NextResponse.json({
     datesArray: datesArray,
   });

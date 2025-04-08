@@ -1,4 +1,4 @@
-import { ScreenshotForm } from "@/app/components/DailyCheckinForm";
+import { ScreenshotForm } from "@/components/DailyCheckinForm";
 import getNameFromEmailadress from "@/lib/getNameFromEmailadress";
 import { auth, currentUser } from "@clerk/nextjs/server";
 

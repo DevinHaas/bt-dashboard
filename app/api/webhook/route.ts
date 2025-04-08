@@ -1,3 +1,4 @@
+"use server";
 import { NextResponse } from "next/server";
 import { Webhook } from "svix";
 import prisma from "@/lib/prisma";
@@ -43,7 +44,7 @@ export async function POST(req: Request) {
         await createUser(clerk_id_for_session);
         break;
       default:
-        console.log("Unhandled event type:", eventType);
+        console.warn("Unhandled event type:", eventType);
     }
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {

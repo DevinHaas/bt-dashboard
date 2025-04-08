@@ -14,7 +14,6 @@ const minioClient = new Minio.Client({
 });
 
 export async function POST(request: Request) {
-  console.log("request recieved");
   const contentType = request.headers.get("content-type") || "";
   const busboy = Busboy({ headers: { "content-type": contentType } });
 
@@ -55,8 +54,6 @@ export async function POST(request: Request) {
         );
         resolve(NextResponse.json({ message: "Uploaded!" }));
       } catch (err) {
-        console.error(err);
-
         reject(
           NextResponse.json({ error: "Failed to upload" }, { status: 500 }),
         );

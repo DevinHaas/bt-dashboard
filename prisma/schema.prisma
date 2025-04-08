@@ -14,9 +14,16 @@ datasource db {
 }
 
 
+enum Role {
+  USER
+  ADMIN
+}
+
+
 model User {
   id String @id @default(uuid())
   clerk_id String @unique 
+  role Role @default(USER)
   screenshotUploads ScreenshotUpload[] 
 }
 
