@@ -6,17 +6,9 @@ export function useUploadScreenshots() {
 
   return useMutation({
     mutationKey: ["screenshots"],
-    mutationFn: async ({
-      data,
-      date,
-      userId,
-    }: {
-      data: FormData;
-      date: Date;
-      userId: string;
-    }) => {
+    mutationFn: async ({ data, date }: { data: FormData; date: Date }) => {
       try {
-        await axios.post("/api/screenshots/dates", { date, userId });
+        await axios.post("/api/screenshots/dates", { date });
 
         const request = await axios.post("/api/screenshots", data);
         return request.status;
@@ -24,26 +16,21 @@ export function useUploadScreenshots() {
         throw error;
       }
     },
-    onSuccess: (_, { userId }) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["screenshot-dates", userId],
+        queryKey: ["screenshot-dates"],
       });
     },
   });
 }
 
-export function useGetUploadDates(userId?: string | null) {
+export function useGetUploadDates() {
   return useQuery<Date[]>({
-    queryKey: ["screenshot-dates", userId],
+    queryKey: ["screenshot-dates"],
     queryFn: async () => {
-      const request = await axios.get(`/api/screenshots/dates`, {
-        params: {
-          userId: userId,
-        },
-      });
+      const request = await axios.get(`/api/screenshots/dates`);
 
       return request.data.datesArray;
     },
-    enabled: !!userId,
   });
 }

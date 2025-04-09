@@ -7,6 +7,7 @@ export function useUserUploadData() {
     queryKey: ["user-upload-data"],
     queryFn: async () => {
       const response = await axios.get("/api/screenshots/uploads/");
+
       return response.data;
     },
   });

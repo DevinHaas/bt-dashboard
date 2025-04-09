@@ -26,6 +26,10 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const { userId, redirectToSignIn } = await auth();
+
+    if (!userId) return redirectToSignIn();
+
     const body = await request.json();
 
     const newDate = await prisma.screenshotUpload.create({

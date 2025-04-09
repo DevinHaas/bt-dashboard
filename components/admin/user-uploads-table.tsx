@@ -36,7 +36,10 @@ import { Badge } from "@/components/ui/badge";
 import type { UserWithUploads } from "@/lib/api";
 import { UploadHistoryModal } from "./upload-history-modal";
 
-export function UserUploadsTable({ data }: { data: UserWithUploads[] }) {
+export function UserUploadsTable({ data }: { data: UserWithUploads[] | null }) {
+  if (!data) {
+    return <p>Loading user uploads...</p>; // Or a spinner, or null
+  }
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [selectedUser, setSelectedUser] = useState<UserWithUploads | null>(
@@ -206,7 +209,7 @@ export function UserUploadsTable({ data }: { data: UserWithUploads[] }) {
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {table.getRowModel().rows && table?.getRowModel()?.rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}

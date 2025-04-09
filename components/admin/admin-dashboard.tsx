@@ -18,12 +18,12 @@ import { useIsAdmin } from "@/hooks/useAuth";
 import { SignInButton } from "@clerk/nextjs";
 
 export default function AdminDashboard() {
-  const { data: isAdmin } = useIsAdmin();
+  const { data: isAdmin, isLoading: isAdminLoading } = useIsAdmin();
   const [activeTab, setActiveTab] = useState("all-users");
 
   const { data: userUploadData, isLoading, error } = useUserUploadData();
 
-  if (isLoading) {
+  if (isLoading && isAdminLoading && !userUploadData) {
     return (
       <div className="container mx-auto py-10">
         <Card>
@@ -37,7 +37,7 @@ export default function AdminDashboard() {
     );
   }
 
-  if (!isAdmin) {
+  if (!isAdmin && !isAdminLoading) {
     return (
       <div className="container mx-auto py-10">
         <Card className="border-destructive">
