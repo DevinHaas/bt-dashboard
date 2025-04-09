@@ -16,6 +16,9 @@ export async function GET() {
       where: {
         clerk_id: userId,
       },
+      select: {
+        role: true,
+      },
     });
 
     return NextResponse.json(user, { status: 200 });

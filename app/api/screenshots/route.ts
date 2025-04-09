@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import Busboy from "busboy";
 import { Readable } from "stream";
 import { ReadableStream } from "stream/web";
+import { auth } from "@clerk/nextjs/server";
 
 const minioClient = new Minio.Client({
   endPoint: "minio-n8gg0g0w44o84oos0cs84o8w.bleat.ch",
@@ -14,6 +15,10 @@ const minioClient = new Minio.Client({
 });
 
 export async function POST(request: Request) {
+  const { userId, redirectToSignIn } = await auth();
+
+  if (!userId) return redirectToSignIn();
+
   const contentType = request.headers.get("content-type") || "";
   const busboy = Busboy({ headers: { "content-type": contentType } });
 

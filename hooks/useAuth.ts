@@ -6,8 +6,10 @@ export function useIsAdmin() {
   return useQuery<boolean>({
     queryKey: ["isAdmin"],
     queryFn: async () => {
-      const response = await axios.get<UserType>("/api/auth/admin");
-      return response.data == UserType.ADMIN;
+      const response = await axios.get<{ role: string }>("/api/auth/admin");
+
+      const role: UserType = response.data.role as UserType;
+      return role === UserType.ADMIN;
     },
   });
 }

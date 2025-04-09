@@ -1,9 +1,14 @@
 "use server";
 import { UserWithUploads } from "@/lib/api";
 import prisma from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 export async function GET() {
+  const { userId, redirectToSignIn } = await auth();
+
+  if (!userId) return redirectToSignIn();
+
   try {
     const users = await prisma.user.findMany({
       include: {
