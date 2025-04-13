@@ -65,13 +65,13 @@ export function MissingUploadsTable({ data }: { data: UserWithUploads[] }) {
 
   const columns: ColumnDef<UserWithUploads>[] = [
     {
-      accessorKey: "clerk_id",
+      accessorKey: "userId",
       header: "User ID",
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
           <User className="h-4 w-4 text-muted-foreground" />
           <span className="truncate max-w-[180px]">
-            {row.getValue("clerk_id")}
+            {row.getValue("userId")}
           </span>
         </div>
       ),
@@ -93,7 +93,11 @@ export function MissingUploadsTable({ data }: { data: UserWithUploads[] }) {
         const count = row.getValue("uploadCount") as number;
 
         if (count === 0) {
-          return <Badge variant="destructive">Never uploaded</Badge>;
+          return (
+            <Badge variant="destructive" className="text-white">
+              Never uploaded
+            </Badge>
+          );
         }
 
         return <Badge variant="secondary">Outdated uploads</Badge>;
@@ -200,11 +204,9 @@ export function MissingUploadsTable({ data }: { data: UserWithUploads[] }) {
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter users..."
-          value={
-            (table.getColumn("clerk_id")?.getFilterValue() as string) ?? ""
-          }
+          value={(table.getColumn("userId")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("clerk_id")?.setFilterValue(event.target.value)
+            table.getColumn("userId")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
