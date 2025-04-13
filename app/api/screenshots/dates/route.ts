@@ -26,16 +26,17 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const { userId, redirectToSignIn } = await auth();
+    const { userId } = await auth();
 
-    if (!userId) return redirectToSignIn();
+    if (!userId) throw Error("userId not found");
 
     const body = await request.json();
+    if (!body.date) throw Error("please provide a date");
 
     const newDate = await prisma.screenshotUpload.create({
       data: {
         date: body.date,
-        userId: body.userId,
+        userId: userId,
       },
     });
 
