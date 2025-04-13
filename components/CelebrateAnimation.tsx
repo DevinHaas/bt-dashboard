@@ -1,6 +1,8 @@
-import Lottie from "lottie-react";
+"use client";
+
+import dynamic from "next/dynamic";
 import celebrate from "../public/celebrate.json";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function CelebrateAnimation({
   onComplete,
@@ -8,14 +10,12 @@ export default function CelebrateAnimation({
   onComplete: () => void;
 }) {
   const [isVisible, setIsVisible] = useState(true);
-  useEffect(() => {
-    console.log("CelebrateAnimation rendered");
-  }, []);
 
+  const DynamicLottie = dynamic(() => import("lottie-react"), { ssr: false });
   if (!isVisible) return null;
   return (
     <div className="fixed inset-0 flex justify-center items-center pointer-events-none z-50">
-      <Lottie
+      <DynamicLottie
         animationData={celebrate}
         loop={false}
         onComplete={() => {

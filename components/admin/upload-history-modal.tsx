@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { format, isSameDay } from "date-fns";
+
+import { format } from "date-fns";
 import { CalendarIcon, X } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -13,9 +13,9 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import type { UserWithUploads } from "@/lib/api";
 import { useUser } from "@clerk/nextjs";
 import getNameFromEmailadress from "@/lib/getNameFromEmailadress";
+import { UserWithUploads } from "@/types/UserWithUploads";
 
 interface UploadHistoryModalProps {
   userData: UserWithUploads | null;
@@ -34,7 +34,7 @@ export function UploadHistoryModal({
   if (!userData) return null;
 
   const uploadDates = userData.screenshotUploads.map(
-    (upload) => new Date(upload.date),
+    (upload: { userId: string; date: Date }) => new Date(upload.date),
   );
 
   return (

@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { differenceInDays } from "date-fns"
+import { useState } from "react";
+import { differenceInDays } from "date-fns";
 import {
   type ColumnDef,
   flexRender,
@@ -12,11 +12,24 @@ import {
   type SortingState,
   getFilteredRowModel,
   type ColumnFiltersState,
-} from "@tanstack/react-table"
-import { ArrowUpDown, Calendar, Mail, MoreHorizontal, User } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+} from "@tanstack/react-table";
+import {
+  ArrowUpDown,
+  Calendar,
+  Mail,
+  MoreHorizontal,
+  User,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,26 +37,31 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Badge } from "@/components/ui/badge"
-import type { UserWithUploads } from "@/lib/api"
-import { UploadHistoryModal } from "./upload-history-modal"
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
+import { UploadHistoryModal } from "./upload-history-modal";
+import { UserWithUploads } from "@/types/UserWithUploads";
 
 export function MissingUploadsTable({ data }: { data: UserWithUploads[] }) {
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const [selectedUser, setSelectedUser] = useState<UserWithUploads | null>(null)
-  const [historyModalOpen, setHistoryModalOpen] = useState(false)
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [selectedUser, setSelectedUser] = useState<UserWithUploads | null>(
+    null,
+  );
+  const [historyModalOpen, setHistoryModalOpen] = useState(false);
 
   // Filter users with no uploads or uploads older than 30 days
   const usersWithMissingUploads = data.filter((user) => {
-    if (user.uploadCount === 0) return true
-    if (!user.lastUpload) return true
+    if (user.uploadCount === 0) return true;
+    if (!user.lastUpload) return true;
 
-    const daysSinceLastUpload = differenceInDays(new Date(), new Date(user.lastUpload))
+    const daysSinceLastUpload = differenceInDays(
+      new Date(),
+      new Date(user.lastUpload),
+    );
 
-    return daysSinceLastUpload > 30
-  })
+    return daysSinceLastUpload > 30;
+  });
 
   const columns: ColumnDef<UserWithUploads>[] = [
     {
@@ -52,7 +70,9 @@ export function MissingUploadsTable({ data }: { data: UserWithUploads[] }) {
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
           <User className="h-4 w-4 text-muted-foreground" />
-          <span className="truncate max-w-[180px]">{row.getValue("clerk_id")}</span>
+          <span className="truncate max-w-[180px]">
+            {row.getValue("clerk_id")}
+          </span>
         </div>
       ),
     },
@@ -60,63 +80,69 @@ export function MissingUploadsTable({ data }: { data: UserWithUploads[] }) {
       accessorKey: "uploadCount",
       header: ({ column }) => {
         return (
-          <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
             Status
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => {
-        const count = row.getValue("uploadCount") as number
+        const count = row.getValue("uploadCount") as number;
 
         if (count === 0) {
-          return <Badge variant="destructive">Never uploaded</Badge>
+          return <Badge variant="destructive">Never uploaded</Badge>;
         }
 
-        return <Badge variant="secondary">Outdated uploads</Badge>
+        return <Badge variant="secondary">Outdated uploads</Badge>;
       },
     },
     {
       accessorKey: "lastUpload",
       header: ({ column }) => {
         return (
-          <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
             Last Activity
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => {
-        const lastUpload = row.getValue("lastUpload") as Date | null
+        const lastUpload = row.getValue("lastUpload") as Date | null;
 
         if (!lastUpload) {
-          return <span className="text-muted-foreground">No activity</span>
+          return <span className="text-muted-foreground">No activity</span>;
         }
 
-        const daysSince = differenceInDays(new Date(), new Date(lastUpload))
+        const daysSince = differenceInDays(new Date(), new Date(lastUpload));
 
         return (
           <div className="flex items-center gap-2">
             <Calendar className="h-4 w-4 text-muted-foreground" />
             <span>{daysSince} days ago</span>
           </div>
-        )
+        );
       },
       sortingFn: (rowA, rowB, columnId) => {
-        const a = rowA.getValue(columnId) as Date | null
-        const b = rowB.getValue(columnId) as Date | null
+        const a = rowA.getValue(columnId) as Date | null;
+        const b = rowB.getValue(columnId) as Date | null;
 
-        if (!a && !b) return 0
-        if (!a) return 1
-        if (!b) return -1
+        if (!a && !b) return 0;
+        if (!a) return 1;
+        if (!b) return -1;
 
-        return new Date(a).getTime() - new Date(b).getTime()
+        return new Date(a).getTime() - new Date(b).getTime();
       },
     },
     {
       id: "actions",
       cell: ({ row }) => {
-        const user = row.original
+        const user = row.original;
 
         return (
           <DropdownMenu>
@@ -128,14 +154,16 @@ export function MissingUploadsTable({ data }: { data: UserWithUploads[] }) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(user.clerk_id)}>
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(user.userId)}
+              >
                 Copy user ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => {
-                  setSelectedUser(user)
-                  setHistoryModalOpen(true)
+                  setSelectedUser(user);
+                  setHistoryModalOpen(true);
                 }}
               >
                 <Calendar className="h-4 w-4 mr-2" />
@@ -147,10 +175,10 @@ export function MissingUploadsTable({ data }: { data: UserWithUploads[] }) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        )
+        );
       },
     },
-  ]
+  ];
 
   const table = useReactTable({
     data: usersWithMissingUploads,
@@ -165,15 +193,19 @@ export function MissingUploadsTable({ data }: { data: UserWithUploads[] }) {
       sorting,
       columnFilters,
     },
-  })
+  });
 
   return (
     <div>
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter users..."
-          value={(table.getColumn("clerk_id")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => table.getColumn("clerk_id")?.setFilterValue(event.target.value)}
+          value={
+            (table.getColumn("clerk_id")?.getFilterValue() as string) ?? ""
+          }
+          onChange={(event) =>
+            table.getColumn("clerk_id")?.setFilterValue(event.target.value)
+          }
           className="max-w-sm"
         />
       </div>
@@ -185,9 +217,14 @@ export function MissingUploadsTable({ data }: { data: UserWithUploads[] }) {
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -195,15 +232,26 @@ export function MissingUploadsTable({ data }: { data: UserWithUploads[] }) {
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
                   All users have recent uploads. Great job!
                 </TableCell>
               </TableRow>
@@ -212,16 +260,29 @@ export function MissingUploadsTable({ data }: { data: UserWithUploads[] }) {
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
           Previous
         </Button>
-        <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
           Next
         </Button>
       </div>
 
-      <UploadHistoryModal user={selectedUser} open={historyModalOpen} onOpenChange={setHistoryModalOpen} />
+      <UploadHistoryModal
+        userData={selectedUser}
+        open={historyModalOpen}
+        onOpenChange={setHistoryModalOpen}
+      />
     </div>
-  )
+  );
 }
-

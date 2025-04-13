@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Card,
@@ -23,7 +22,7 @@ export default function AdminDashboard() {
 
   const { data: userUploadData, isLoading, error } = useUserUploadData();
 
-  if (isLoading && isAdminLoading && !userUploadData) {
+  if (isLoading && isAdminLoading) {
     return (
       <div className="container mx-auto py-10">
         <Card>
@@ -57,7 +56,7 @@ export default function AdminDashboard() {
     );
   }
 
-  if (error && userUploadData == undefined) {
+  if (error && !userUploadData) {
     return (
       <div className="container mx-auto py-10">
         <Card className="border-destructive">

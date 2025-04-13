@@ -52,7 +52,7 @@ export function ScreenshotForm() {
   const { userId } = useAuth();
 
   const { mutate: UploadScreenshots } = useUploadScreenshots();
-  const { data: dates } = useGetUploadDates(userId);
+  const { data: dates } = useGetUploadDates();
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     const formData = new FormData();
@@ -68,7 +68,7 @@ export function ScreenshotForm() {
         throw new Error("please log-in to upload screenshots");
       }
 
-      UploadScreenshots({ data: formData, date: data.date, userId });
+      UploadScreenshots({ data: formData, date: data.date });
 
       toast.success(
         `Your ${

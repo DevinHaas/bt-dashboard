@@ -1,4 +1,4 @@
-import { UserWithUploads } from "@/lib/api";
+import { UserWithUploads } from "@/types/UserWithUploads";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 

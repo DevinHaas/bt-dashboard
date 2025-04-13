@@ -1,6 +1,6 @@
 "use server";
-import { UserWithUploads } from "@/lib/api";
 import prisma from "@/lib/prisma";
+import { UserWithUploads } from "@/types/UserWithUploads";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 

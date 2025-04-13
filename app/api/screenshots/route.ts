@@ -58,10 +58,8 @@ export async function POST(request: Request) {
           ),
         );
         resolve(NextResponse.json({ message: "Uploaded!" }));
-      } catch (err) {
-        reject(
-          NextResponse.json({ error: "Failed to upload" }, { status: 500 }),
-        );
+      } catch (error) {
+        reject(NextResponse.json({ error: error }, { status: 500 }));
       }
     });
     const readable = Readable.fromWeb(
