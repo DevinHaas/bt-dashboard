@@ -30,19 +30,23 @@ export function useUploadScreenshots() {
         }
 
         if (axios.isAxiosError(error)) {
-          throw new Error(error.response?.data?.message || "Upload failed");
+          throw new Error(
+            error.response?.data?.message || "Hochladen fehlgeschlagen 😥",
+          );
         }
-        throw new Error("An unexpected error occurred during upload");
+        throw new Error("Ein unerwarteter Fehler ist aufgetreten 😥");
       }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["screenshot-dates"],
       });
-      toast.success("Your screenshots where uploaded😍");
+      toast.success("Deine Screenshots wurden hochgeladen 😍");
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to upload screenshots");
+      toast.error(
+        error.message || "Hochladen der Screenshots fehlgeschlagen 😥",
+      );
     },
   });
 }

@@ -13,8 +13,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useUser } from "@clerk/nextjs";
-import getNameFromEmailadress from "@/lib/getNameFromEmailadress";
 import { UserWithUploads } from "@/types/UserWithUploads";
 
 interface UploadHistoryModalProps {
@@ -28,9 +26,6 @@ export function UploadHistoryModal({
   open,
   onOpenChange,
 }: UploadHistoryModalProps) {
-  const { user } = useUser();
-  const email = user?.emailAddresses[0]?.emailAddress ?? null;
-
   if (!userData) return null;
 
   const uploadDates = userData.screenshotUploads.map(
@@ -43,8 +38,7 @@ export function UploadHistoryModal({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <CalendarIcon className="h-5 w-5" />
-            Upload History for{" "}
-            {(email ? getNameFromEmailadress(email) : null) || userData.userId}
+            Upload History for{userData.userId}
           </DialogTitle>
           <DialogDescription>
             Green dates indicate days with uploads. Orange dates indicate days
