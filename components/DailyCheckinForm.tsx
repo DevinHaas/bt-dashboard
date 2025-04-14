@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Loader2 } from "lucide-react";
 import { format, isSameDay } from "date-fns";
 import {
   Popover,
@@ -51,7 +51,7 @@ const FormSchema: z.ZodType<{ date: Date; screenshots: FileWithPreview[] }> =
 export function ScreenshotForm() {
   const { userId } = useAuth();
 
-  const { mutate: UploadScreenshots } = useUploadScreenshots();
+  const { mutate: UploadScreenshots, isPending } = useUploadScreenshots();
   const { data: dates } = useGetUploadDates();
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
@@ -64,17 +64,8 @@ export function ScreenshotForm() {
     });
 
     try {
-      if (!userId) {
-        throw new Error("please log-in to upload screenshots");
-      }
-
       UploadScreenshots({ data: formData, date: data.date });
 
-      toast.success(
-        `Your ${
-          data.screenshots.length > 1 ? "screenshots were" : "screenshot was"
-        } successfully uploaded 🎉`,
-      );
       form.reset();
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
@@ -154,9 +145,18 @@ export function ScreenshotForm() {
           )}
         />
         <ImageUpload control={form.control} />
-        <Button className="mt-2" type="submit">
-          Submit Screenshot
-        </Button>
+
+        {!isPending && (
+          <Button className="mt-2" type="submit">
+            Submit Screenshot
+          </Button>
+        )}
+        {isPending && (
+          <Button className="mt-2" disabled>
+            <Loader2 className="animate-spin" />
+            Processing
+          </Button>
+        )}
       </form>
     </Form>
   );

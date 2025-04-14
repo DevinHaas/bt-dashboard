@@ -45,3 +45,44 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Could not add Date", status: 500 });
   }
 }
+
+export async function DELETE(request: Request) {
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const dateId = searchParams.get("dateId");
+
+    if (!dateId) {
+      return NextResponse.json(
+        { error: "DateId is required" },
+        { status: 400 },
+      );
+    }
+
+    const dateEntry = await prisma.screenshotUpload.findUnique({
+      where: { id: dateId },
+    });
+
+    if (!dateEntry) {
+      return NextResponse.json(
+        { error: "Screenshot upload not found" },
+        { status: 404 },
+      );
+    }
+
+    await prisma.screenshotUpload.delete({
+      where: { id: dateId },
+    });
+
+    return NextResponse.json(
+      { message: "Screenshot upload deleted successfully" },
+      { status: 200 },
+    );
+  } catch (error) {
+    return NextResponse.json({ error: error }, { status: 500 });
+  }
+}

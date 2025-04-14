@@ -57,7 +57,7 @@ export async function POST(request: Request) {
             ),
           ),
         );
-        resolve(NextResponse.json({ message: "Uploaded!" }));
+        resolve(NextResponse.json({ message: "Uploaded!", status: 201 }));
       } catch (error) {
         reject(NextResponse.json({ error: error }, { status: 500 }));
       }
